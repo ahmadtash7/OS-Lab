@@ -1,5 +1,5 @@
 import os
-import mmap
+import glob
 
 filesInUse = []
 root = os.getcwd()
@@ -12,8 +12,6 @@ def createFile():
     content = input("Enter the content of the file: ")
     file.write(content)
     print(filesInUse)
-    # filesInUse.remove(hex(id(filename)))
-    # file.close()
 
 
 def deleteFile(filename):
@@ -60,10 +58,10 @@ def openFile():
         case 'w':
             startingIndex = input("Enter starting index: ")
             file = open(filename, "r")
-            filesInUse.append(hex(id(file)))
+            filesInUse.append(file)
             userContent = input("Enter the content you want to add: ")
             contents = file.read()
-            filesInUse.remove(hex(id(file)))
+            filesInUse.remove(file)
             file.close()
             contents = str(contents)
 
@@ -73,26 +71,26 @@ def openFile():
             contents = contents[:int(startingIndex)] + \
                 userContent + contents[int(startingIndex):]
             file = open(filename, "w")
-            filesInUse.append(hex(id(file)))
+            filesInUse.append(file)
             file.write(contents)
 
         case 'a':
             filename = open(filename, "a")
-            filesInUse.append(hex(id(filename)))
+            filesInUse.append(filename)
             content = input("Enter the content to append: ")
             filename.write(content)
 
         case 'r':
             filename = open(filename, "r")
-            filesInUse.append(hex(id(filename)))
+            filesInUse.append(filename)
             print(filename.read())
 
         case 'x':
             # index = input("Enter ending index: ")
             file = open(filename, "r")
-            filesInUse.append(hex(id(file)))
-            # print(str(hex(id(file[0]))))
-            # print(str(hex(id(file[1]))))
+            filesInUse.append(file)
+            # print(str(file[0]))))
+            # print(str(file[1]))))
             print(file[0])
             # print(file[:index])
 
@@ -103,9 +101,9 @@ def openFile():
 def moveWithinFile():
     filename = input("Enter the name of the file you want to write to: ")
     file = open(filename, "r")
-    filesInUse.append(hex(id(file)))
+    filesInUse.append(file)
     contents = file.read()
-    filesInUse.remove(hex(id(file)))
+    filesInUse.remove(file)
     file.close()
     contents = str(contents)
     moveDataFrom = int(input("Enter starting index: "))
@@ -118,9 +116,9 @@ def moveWithinFile():
         contents[moveDataTo:]
 
     file = open(filename, "w")
-    filesInUse.append(hex(id(file)))
+    filesInUse.append(file)
     file.write(contents)
-    filesInUse.remove(hex(id(file)))
+    filesInUse.remove(file)
     file.close()
 
 
@@ -130,9 +128,9 @@ def truncateFile():
     fileSize = os.path.getsize(filename)
     if int(size) < fileSize:
         file = open(filename, "r+")
-        filesInUse.append(hex(id(file)))
+        filesInUse.append(file)
         file.truncate(int(size))
-        filesInUse.remove(hex(id(file)))
+        filesInUse.remove(file)
         file.close()
     else:
         print("File is already smaller than the size you want to truncate to!!!")
@@ -145,6 +143,17 @@ def closeFile():
         filename.close()
     else:
         print("File is not opened")
+
+
+def memoryMap():
+    # obj = os.scandir()
+    # for entry in obj:
+    #     if entry.is_file():
+    #         print(entry.name)
+    #     else:
+    #         print(entry.name)
+    for file in glob.iglob(root, recursive=True):
+        print(file)
 
 
 if __name__ == "__main__":
@@ -164,8 +173,8 @@ if __name__ == "__main__":
                 deleteFile(filename)
             case '3':
                 closeFile()
-            # case '4':
-            #     makeDirectory()
+            case '4':
+                memoryMap()
             # case '5':
             #     changeDirectory()
             # case '6':
